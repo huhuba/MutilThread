@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>java.util.Map</OriginalElement>
+  <nodes>
+    <node x="336.16406250000006" y="252.0">java.util.LinkedHashMap</node>
+    <node x="327.50000000000006" y="172.0">java.util.concurrent.ConcurrentSkipListMap</node>
+    <node x="571.5" y="80.0">java.util.AbstractMap</node>
+    <node x="1036.5" y="172.0">java.util.TreeMap</node>
+    <node x="380.75000000000006" y="0.0">java.util.Map</node>
+    <node x="56.5" y="172.0">java.util.concurrent.ConcurrentHashMap</node>
+    <node x="847.5" y="172.0">java.util.HashMap</node>
+    <node x="618.5" y="172.0">java.util.WeakHashMap</node>
+    <node x="1132.7578125" y="80.0">java.util.Hashtable</node>
+    <node x="10.5" y="80.0">java.util.concurrent.ConcurrentMap</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="java.util.concurrent.ConcurrentMap" target="java.util.Map" relationship="INTERFACE_GENERALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="118.0" y="49.0" />
+      <point x="414.00000000000006" y="49.0" />
+      <point x="-33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.Hashtable" target="java.util.Map" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="1219.2578125" y="59.0" />
+      <point x="777.0" y="59.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.concurrent.ConcurrentSkipListMap" target="java.util.concurrent.ConcurrentMap" relationship="REALIZATION">
+      <point x="-67.75" y="-14.0" />
+      <point x="395.25000000000006" y="150.0" />
+      <point x="315.00000000000006" y="150.0" />
+      <point x="315.00000000000006" y="130.0" />
+      <point x="118.00000000000006" y="130.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.LinkedHashMap" target="java.util.HashMap" relationship="GENERALIZATION">
+      <point x="54.25" y="-14.0" />
+      <point x="498.91406250000006" y="226.0" />
+      <point x="932.0" y="226.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.WeakHashMap" target="java.util.Map" relationship="REALIZATION">
+      <point x="52.25" y="-14.0" />
+      <point x="775.25" y="130.0" />
+      <point x="777.0" y="130.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.concurrent.ConcurrentHashMap" target="java.util.AbstractMap" relationship="GENERALIZATION">
+      <point x="62.75" y="-14.0" />
+      <point x="244.75" y="140.0" />
+      <point x="669.0" y="140.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.AbstractMap" target="java.util.Map" relationship="REALIZATION">
+      <point x="0.0" y="-14.0" />
+      <point x="669.0" y="59.0" />
+      <point x="777.0" y="59.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.concurrent.ConcurrentHashMap" target="java.util.concurrent.ConcurrentMap" relationship="REALIZATION">
+      <point x="-62.75" y="-14.0" />
+      <point x="119.25" y="150.0" />
+      <point x="118.0" y="150.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.TreeMap" target="java.util.Map" relationship="REALIZATION">
+      <point x="41.5" y="-14.0" />
+      <point x="1161.0" y="150.0" />
+      <point x="1122.2578125" y="150.0" />
+      <point x="1122.2578125" y="59.0" />
+      <point x="777.0" y="59.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.WeakHashMap" target="java.util.AbstractMap" relationship="GENERALIZATION">
+      <point x="-52.25" y="-14.0" />
+      <point x="670.75" y="140.0" />
+      <point x="669.0" y="140.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.TreeMap" target="java.util.AbstractMap" relationship="GENERALIZATION">
+      <point x="-41.5" y="-14.0" />
+      <point x="1078.0" y="140.0" />
+      <point x="669.0" y="140.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.concurrent.ConcurrentSkipListMap" target="java.util.Map" relationship="REALIZATION">
+      <point x="-67.75" y="-14.0" />
+      <point x="395.25000000000006" y="150.0" />
+      <point x="315.00000000000006" y="150.0" />
+      <point x="315.00000000000006" y="59.0" />
+      <point x="777.0" y="59.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.LinkedHashMap" target="java.util.Map" relationship="REALIZATION">
+      <point x="-54.25" y="-14.0" />
+      <point x="390.41406250000006" y="226.0" />
+      <point x="0.0" y="226.0" />
+      <point x="0.0" y="59.0" />
+      <point x="777.0" y="59.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.HashMap" target="java.util.Map" relationship="REALIZATION">
+      <point x="42.25" y="-14.0" />
+      <point x="974.25" y="130.0" />
+      <point x="955.0416666666667" y="130.0" />
+      <point x="955.0416666666667" y="59.0" />
+      <point x="777.0" y="59.0" />
+      <point x="777.0" y="49.0" />
+      <point x="480.50000000000006" y="49.0" />
+      <point x="33.25" y="14.0" />
+    </edge>
+    <edge source="java.util.concurrent.ConcurrentSkipListMap" target="java.util.AbstractMap" relationship="GENERALIZATION">
+      <point x="67.74999999999994" y="-14.0" />
+      <point x="530.75" y="140.0" />
+      <point x="669.0" y="140.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+    <edge source="java.util.HashMap" target="java.util.AbstractMap" relationship="GENERALIZATION">
+      <point x="-42.25" y="-14.0" />
+      <point x="889.75" y="140.0" />
+      <point x="669.0" y="140.0" />
+      <point x="0.0" y="14.0" />
+    </edge>
+  </edges>
+  <settings layout="分层" zoom="1.0" showDependencies="false" x="653.0" y="140.0" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
