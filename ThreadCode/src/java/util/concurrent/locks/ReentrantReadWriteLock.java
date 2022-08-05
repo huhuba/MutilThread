@@ -34,8 +34,8 @@
  */
 
 package java.util.concurrent.locks;
-import java.util.concurrent.TimeUnit;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of {@link ReadWriteLock} supporting similar

@@ -266,7 +266,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
 
     /**<ul><li>可对其进行树化的 bin 的最小表容量。</li>
      * <li>（否则，如果 bin 中有太多节点，则调整表的大小。）</li>
-     * <li>应至少为 4 * TREEIFY_THRESHOLD 以避免调整大小和树化阈值之间的冲突</li>
+     * <li>应至少为 4 * TREEIFY_THRESHOLD（TREEIFY_THRESHOLD=8） 以避免调整大小和树化阈值之间的冲突</li>
      * </ul>
      * The smallest table capacity for which bins may be treeified.
      * (Otherwise the table is resized if too many nodes in a bin.)
@@ -630,10 +630,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                    boolean evict) {
         Node<K,V>[] tab; Node<K,V> p; int n, i;
-        if ((tab = table) == null || (n = tab.length) == 0)//如果没有值，进入以下方法
-            n = (tab = resize()).length;//返回目前存储的长度
+        if ((tab = table) == null || (n = tab.length) == 0)//如果HashMap当前没有值，进入以下方法
+            n = (tab = resize()).length;//返回目前存储的长度?esize()?
 
-        if ((p = tab[i = (n - 1) & hash]) == null)//如果hash值指定的位置，值为空，则进入以下代码
+        if ((p = tab[i = (n - 1) & hash]) == null)//如果hash值指定的位置（(n - 1) & hash]），值为空，则进入以下代码
             tab[i] = newNode(hash, key, value, null);//封装成Node节点并返回
         else {//要放入的位置，已经有值了
             Node<K,V> e; K k;
@@ -648,6 +648,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
                         p.next = newNode(hash, key, value, null);
+                        //链表第8个值开始树化
                         if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
                             treeifyBin(tab, hash);
                         break;
@@ -687,15 +688,15 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         int oldCap = (oldTab == null) ? 0 : oldTab.length;
         int oldThr = threshold;
         int newCap, newThr = 0;
-        if (oldCap > 0) {//原来有值
-            if (oldCap >= MAXIMUM_CAPACITY) {
+        if (oldCap > 0) {//原来容量大于0
+            if (oldCap >= MAXIMUM_CAPACITY) {//原来容量大于等于最大值
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
-            }
+            }//容量扩2倍
             else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
                     oldCap >= DEFAULT_INITIAL_CAPACITY)
-                newThr = oldThr << 1; // double threshold，双阈值
-        }
+                newThr = oldThr << 1; // double threshold，阈值扩两倍
+        }//原来阈值大于0
         else if (oldThr > 0) // initial capacity was placed in threshold，初始容量设置为阈值
             newCap = oldThr;
         else {               // zero initial threshold signifies using defaults，零初始阈值表示使用默认值
@@ -726,6 +727,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                         Node<K,V> next;
                         do {
                             next = e.next;
+                            //e.hash & oldCap:得出hash值的高位是0还是1，0:保留在原链表或者树；1:偏移到新的位置（原索引+oldCap）
                             if ((e.hash & oldCap) == 0) {
                                 if (loTail == null)
                                     loHead = e;
@@ -756,14 +758,18 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         return newTab;
     }
 
-    /**<ul>替换给定哈希索引处 bin 中的所有链接节点，除非表太小，在这种情况下调整大小</ul>
+    /**<ul>替换给定哈希索引处 bin 中的所有链接节点，除非表太小，在这种情况下调整大小
+     * <li>在链表插入第8个值时，开始判断是否树化</li>
+     * </ul>
      * Replaces all linked nodes in bin at index for given hash unless
      * table is too small, in which case resizes instead.
      */
     final void treeifyBin(Node<K,V>[] tab, int hash) {
         int n, index; Node<K,V> e;
+                            //数组长度小于64,不进行树化，调整数组长度（扩容）
         if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
             resize();
+        //数组长度大于等于64时才进行树化
         else if ((e = tab[index = (n - 1) & hash]) != null) {
             TreeNode<K,V> hd = null, tl = null;
             do {
@@ -2131,7 +2137,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                 moveRootToFront(tab, r);
         }
 
-        /**
+        /**<ul>将树中的节点拆分为较低和较高的树，
+         * <li>如果现在太小，则取消树化。仅从调整大小调用</li>
+         * <li>请参阅上面关于拆分位和索引的讨论</li>
+         * </ul>
          * Splits nodes in a tree bin into lower and upper tree bins,
          * or untreeifies if now too small. Called only from resize;
          * see above discussion about split bits and indices.
@@ -2143,7 +2152,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
          */
         final void split(HashMap<K,V> map, Node<K,V>[] tab, int index, int bit) {
             TreeNode<K,V> b = this;
-            // Relink into lo and hi lists, preserving order
+            // Relink into lo and hi lists, preserving order,重新链接到 lo(lower) 和 hi(hight) 列表，保留顺序
             TreeNode<K,V> loHead = null, loTail = null;
             TreeNode<K,V> hiHead = null, hiTail = null;
             int lc = 0, hc = 0;
