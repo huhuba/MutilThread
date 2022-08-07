@@ -2138,15 +2138,16 @@ public abstract class AbstractQueuedSynchronizer
             Node node = addConditionWaiter();//将当前线程封装成Node，添加到等待队列的尾部，并返回该Node
             int savedState = fullyRelease(node);
             int interruptMode = 0;
-            while (!isOnSyncQueue(node)) {
+            while (!isOnSyncQueue(node)) {//如果当前线程不在同步队列中
+                //AQS底层也是用的LockSupport.park()方法.
                 LockSupport.park(this);
                 if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
                     break;
             }
             if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
-                interruptMode = REINTERRUPT;
+                interruptMode = REINTERRUPT;//重新中断
             if (node.nextWaiter != null) // clean up if cancelled
-                unlinkCancelledWaiters();
+                unlinkCancelledWaiters();//清除取消的Node链接
             if (interruptMode != 0)
                 reportInterruptAfterWait(interruptMode);
         }
