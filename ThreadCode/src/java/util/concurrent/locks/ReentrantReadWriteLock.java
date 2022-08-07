@@ -238,6 +238,7 @@ public class ReentrantReadWriteLock
      */
     public ReentrantReadWriteLock(boolean fair) {
         sync = fair ? new FairSync() : new NonfairSync();
+        //可重入的读写锁:使用了读和写两把锁.但是是同一个同步器,且只有写锁可以建立Condition对象,所以只有一个等待队列.
         readerLock = new ReadLock(this);
         writerLock = new WriteLock(this);
     }

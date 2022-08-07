@@ -166,7 +166,7 @@ public class Semaphore implements java.io.Serializable {
     abstract static class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = 1192457210091910933L;
 
-        Sync(int permits) {
+        Sync(int permits) {//设置资源数量
             setState(permits);
         }
 
