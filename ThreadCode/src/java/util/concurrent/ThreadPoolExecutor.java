@@ -617,11 +617,14 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
          */
         private static final long serialVersionUID = 6138294804551838833L;
 
-        /** Thread this worker is running in.  Null if factory fails. */
+        /**<ul>该worker正在执行的线程</ul>
+         * Thread this worker is running in.  Null if factory fails. */
         final Thread thread;
-        /** Initial task to run.  Possibly null. */
+        /**<ul>要运行的初始任务。可能为空</ul>
+         * Initial task to run.  Possibly null. */
         Runnable firstTask;
-        /** Per-thread task counter */
+        /** <ul>每线程任务计数器</ul>
+         * Per-thread task counter */
         volatile long completedTasks;
 
         /**
@@ -819,7 +822,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                         w.unlock();
                     }
                 }
-                if (onlyOne)
+                if (onlyOne)//onlyOne：是否只是中断一次（一个）
                     break;
             }
         } finally {
@@ -894,7 +897,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * Methods for creating, running and cleaning up after workers
      */
 
-    /**
+    /**<ul>如果线程成功添加进workers集合，则返回true，否则返回false</ul>
      * Checks if a new worker can be added with respect to current
      * pool state and the given bound (either core or maximum). If so,
      * the worker count is adjusted accordingly, and, if possible, a
@@ -944,11 +947,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                 c = ctl.get();  // Re-read ctl
                 if (runStateOf(c) != rs)
                     continue retry;//重读ctl值，如果线程池状态有变动，则继续CAS;
-                // else CAS failed due to workerCount change; retry inner loop
+                // else CAS failed due to workerCount change; retry inner loop;否则 CAS 由于 workerCount 变化而失败；重试内循环
             }
-        }//这个CAS代码块，主要是对工作线程加1；
+        }//这个CAS代码块，主要是对工作线程数量加1；
 
-        boolean workerStarted = false;
+        boolean workerStarted = false;//是否成功添加进workers集合
         boolean workerAdded = false;
         Worker w = null;
         try {
@@ -977,7 +980,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                     mainLock.unlock();
                 }
                 if (workerAdded) {
-                    t.start();
+                    t.start();//如果线程成功加入workers集合，则启动线程
                     workerStarted = true;
                 }
             }
@@ -988,7 +991,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         return workerStarted;
     }
 
-    /**<ul>回滚工作线程创建</ul>
+    /**<ul>回滚工作线程创建
+     *  <li>删除已经添加进入workers集合的worker</li>
+     *  <li>减少已经增加的工作线程数</li>
+     * </ul>
      * Rolls back the worker thread creation.
      * - removes worker from workers, if present
      * - decrements worker count
@@ -1029,7 +1035,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         mainLock.lock();
         try {
             completedTaskCount += w.completedTasks;
-            workers.remove(w);
+            workers.remove(w);//worker删除后，没有引用指向该worker，会被GC回收
         } finally {
             mainLock.unlock();
         }
@@ -1049,7 +1055,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         }
     }
 
-    /**
+    /**<ul>从workerQueue中取出一个任务</ul>
      * Performs blocking or timed wait for a task, depending on
      * current configuration settings, or returns null if this worker
      * must exit because of any of:
@@ -1070,7 +1076,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         //返回一个任务
         boolean timedOut = false; // Did the last poll() time out?
 
-        for (;;) {
+        for (;;) {//cas方式取task;
             int c = ctl.get();
             int rs = runStateOf(c);
 
@@ -1083,6 +1089,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
             int wc = workerCountOf(c);
 
             // Are workers subject to culling?
+            //allowCoreThreadTimeOut:核心线程是否要被清除。
+            //如果核心线程不清除，只清除非核心线程，则判断当前线程是核心线程还是非核心线程
+            //如果当前线程数量>核心线程数量，则当前线程为非核心线程。如果keepAliveTime时间内没有取得任务去执行
+            //则将timedOut设置为true;下一次循环进来后，会减少工作线程数量（如果没有减少成功，则继续循环直到成功），结束循环并返回null
             boolean timed = allowCoreThreadTimeOut || wc > corePoolSize;
 
             if ((wc > maximumPoolSize || (timed && timedOut))
@@ -1097,7 +1107,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                         workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :
                         workQueue.take();
                 if (r != null)
-                    return r;
+                    return r;//从workQueue中拿一个任务/命令返回
                 timedOut = true;
             } catch (InterruptedException retry) {
                 timedOut = false;
@@ -1153,9 +1163,10 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         Thread wt = Thread.currentThread();
         Runnable task = w.firstTask;
         w.firstTask = null;
-        w.unlock(); // allow interrupts
+        w.unlock(); // allow interrupts，为什么先解锁？
         boolean completedAbruptly = true;
         try {
+            //getTask()：1：当队列中没有任务时返null；2：非核心线程空闲超时时返回null
             while (task != null || (task = getTask()) != null) {
                 w.lock();
                 // If pool is stopping, ensure thread is interrupted;
@@ -1171,7 +1182,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                     beforeExecute(wt, task);
                     Throwable thrown = null;
                     try {
-                        task.run();
+                        task.run();//执行run()方法体
                     } catch (RuntimeException x) {
                         thrown = x; throw x;
                     } catch (Error x) {
@@ -1189,6 +1200,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
             }
             completedAbruptly = false;
         } finally {
+            //没有任务执行时，将该worker处理过的任务数计算到线程池的总任务数中，并将该worker从workers集合中删除。
             processWorkerExit(w, completedAbruptly);
         }
     }
@@ -1388,13 +1400,14 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
          * and so reject the task.
          */
         int c = ctl.get();
+        //工作线程数<核心线程数，新建一个核心线程（workers集合：正在工作的线程集合）去执行任务。
         if (workerCountOf(c) < corePoolSize) {//判断运行线程池数量是否小于核心线程池数量
-            //                          是否启动核心线程池
+            //                          true:启动核心线程
             if (addWorker(command, true))//返回是否成功添加到worker集合
                 return;
             c = ctl.get();
         }
-        //如果没有添加到worker集合，则执行如下代码
+        //如果没有添加到worker集合或者核心线程数已经满了，则将线程添加进队列。
         //线程池状态为：RUNNING且将任务添加workQueue成功
         if (isRunning(c) && workQueue.offer(command)) {
             int recheck = ctl.get();
@@ -1403,7 +1416,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
                 reject(command);//删除成功，则执行拒绝策略
             else if (workerCountOf(recheck) == 0)//工作线程数量为0
                 addWorker(null, false);//添加一个空任务到worker集合，Q：为啥添加一个空的任务？
-        }
+        }                               //添加进非核心线程
         else if (!addWorker(command, false))
             reject(command);
     }
@@ -1785,7 +1798,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         return workQueue;
     }
 
-    /**
+    /**<ul>从workQueue中删除给定的task</ul>
      * Removes this task from the executor's internal queue if it is
      * present, thus causing it not to be run if it has not already
      * started.
@@ -1807,7 +1820,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         return removed;
     }
 
-    /**
+    /**<ul>清除workQueue</ul>
      * Tries to remove from the work queue all {@link Future}
      * tasks that have been cancelled. This method can be useful as a
      * storage reclamation operation, that has no other impact on

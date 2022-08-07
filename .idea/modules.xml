@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/MutilThread.iml" filepath="$PROJECT_DIR$/.idea/MutilThread.iml" />
       <module fileurl="file://$PROJECT_DIR$/ThreadCode/ThreadCode.iml" filepath="$PROJECT_DIR$/ThreadCode/ThreadCode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ThreadTest/ThreadTest.iml" filepath="$PROJECT_DIR$/ThreadTest/ThreadTest.iml" />
     </modules>
   </component>
 </project>
